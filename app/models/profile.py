@@ -1,9 +1,6 @@
-# app/models/user.py
 from sqlalchemy import Column, Integer, String, Date, Text, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
-
-# Định nghĩa Base
 Base = declarative_base()
 
 class Profile(Base):
