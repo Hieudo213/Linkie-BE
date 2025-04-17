@@ -1,10 +1,10 @@
 # app/main.py
 from fastapi import FastAPI
-from app.routers import ProfileController
-from app.core.database import engine, Base
-from app.routers import ProfileController
+from app.routers import ProfileController, ImageController
+
 app = FastAPI()
 app.include_router(ProfileController.router)
+app.include_router(ImageController.router)
 
 @app.get("/")
 def root():

@@ -1,11 +1,13 @@
 # app/routers/user.py
+from typing import List
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
-from app.schemas.ProfileDTO import ProfileCreate, ProfileOut
-from app.schemas.ProfileDTO import ProfileOut
-from app.crud.ProfileService import get_all_profiles, create_profile, update_profile, delete_profile
+
 from app.core.database import get_db
+from app.crud.ProfileService import get_all_profiles, create_profile, update_profile, delete_profile
+from app.schemas.ProfileDTO import ProfileCreate
+from app.schemas.ProfileDTO import ProfileOut
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
 

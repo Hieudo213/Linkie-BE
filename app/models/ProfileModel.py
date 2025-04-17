@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, Text, DateTime, Enum
 from sqlalchemy.sql import func
-from sqlalchemy.orm import declarative_base
 from app.enum.ProfileEnum import GenderEnum, HobbyEnum
-Base = declarative_base()
+from app.core.base import Base
 
 class Profile(Base):
     __tablename__ = "profiles"

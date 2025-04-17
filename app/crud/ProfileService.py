@@ -1,10 +1,12 @@
 # app/crud/user.py
+from datetime import datetime
+
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
+
 from app.models.ProfileModel import Profile
 from app.schemas.ProfileDTO import ProfileCreate
-from app.models.ProfileModel import Profile
-from datetime import datetime
-from fastapi import HTTPException
+
 
 def get_all_profiles(db: Session):
     return db.query(Profile).all()
