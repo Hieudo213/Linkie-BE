@@ -1,10 +1,13 @@
 # app/core/database.py
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.models.profile import Base, Profile  # Import Base và Profile từ profile.py
+from app.models.ProfileModel import Base, Profile  # Import Base và Profile từ profile.py
+from dotenv import load_dotenv
 
-DATABASE_URL = "postgresql://postgres:Concho123@localhost:5432/linkie"
-engine = create_engine(DATABASE_URL)
+load_dotenv() 
+database_url = os.environ.get("DATABASE_URL")
+engine = create_engine(database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Tạo bảng
