@@ -47,3 +47,10 @@ def delete_profile(db: Session, profile_id: int) -> str:
     db.delete(profile)
     db.commit()
     return f"Xoá thành công profile có id: {profile_id}"
+
+def get_profile_by_id(db: Session, profile_id: int) -> Profile:
+    profile = db.query(Profile).filter(Profile.id == profile_id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    return profile

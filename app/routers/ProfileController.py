@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.crud.ProfileService import get_all_profiles, create_profile, update_profile, delete_profile
+from app.crud.ProfileService import get_all_profiles, create_profile, update_profile, delete_profile, get_profile_by_id
 from app.schemas.ProfileDTO import ProfileCreate
 from app.schemas.ProfileDTO import ProfileOut
 
@@ -26,3 +26,7 @@ def update_existing_profile(profile_id: int, update_data: ProfileCreate, db: Ses
 @router.delete("/delete/{profile_id}", response_model=str)
 def remove_profile(profile_id: int, db: Session = Depends(get_db)):
     return delete_profile(db=db, profile_id=profile_id)
+
+@router.get("/{profile_id}", response_model=ProfileOut)
+def read_profile_by_id(profile_id: int, db: Session = Depends(get_db)):
+    return get_profile_by_id(db=db, profile_id=profile_id)

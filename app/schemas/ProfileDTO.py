@@ -1,8 +1,9 @@
 # app/schemas/user.py
 from pydantic import BaseModel
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 from app.enum.ProfileEnum import GenderEnum
+from app.schemas.ImagesDTO import ImageOut
 class ProfileOut(BaseModel):
     id: int
     first_name: str
@@ -12,10 +13,10 @@ class ProfileOut(BaseModel):
     date_of_birth: Optional[date] = None
     bio: Optional[str] = None
     created_at: datetime
+    images: List[ImageOut]
 
-    model_config = {
-       "from_attributes" : True 
-    }
+    class Config:
+        orm_mode = True
 
 class ProfileCreate(BaseModel):
     first_name: str
