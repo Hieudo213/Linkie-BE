@@ -1,8 +1,8 @@
-"""add table images
+"""change enum to array
 
-Revision ID: a888ec90d129
-Revises: 59f2e5108fde
-Create Date: 2025-04-17 23:06:47.620892
+Revision ID: 48606814a0fa
+Revises: 07e27e93ef0a
+Create Date: 2025-04-19 16:02:32.201854
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a888ec90d129'
-down_revision: Union[str, None] = '59f2e5108fde'
+revision: str = '48606814a0fa'
+down_revision: Union[str, None] = '07e27e93ef0a'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

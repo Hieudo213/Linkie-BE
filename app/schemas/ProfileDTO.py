@@ -2,29 +2,29 @@
 from pydantic import BaseModel
 from datetime import date, datetime
 from typing import Optional, List
-from app.enum.ProfileEnum import GenderEnum
+from app.enum.ProfileEnum import GenderEnum, HobbyEnum
 from app.schemas.ImagesDTO import ImageOut
 class ProfileOut(BaseModel):
     id: int
-    first_name: str
-    last_name: str
-    hobby: Optional[str] = None
-    gender: GenderEnum 
+    full_name: str
+    gender: GenderEnum
     date_of_birth: Optional[date] = None
     bio: Optional[str] = None
     created_at: datetime
     images: List[ImageOut]
+    target_type: Optional[str] = None
+    hobby: Optional[List[HobbyEnum]] = None
 
     class Config:
         orm_mode = True
 
 class ProfileCreate(BaseModel):
-    first_name: str
-    last_name: str
+    full_name: str
     gender: GenderEnum
-    hobby: Optional[str] = None
     date_of_birth: Optional[date] = None
     bio: Optional[str] = None
+    target_type: Optional[str] = None
+    hobby: Optional[List[HobbyEnum]] = None
     
     model_config = {
        "from_attributes" : True 

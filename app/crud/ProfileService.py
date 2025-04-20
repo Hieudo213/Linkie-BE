@@ -13,13 +13,13 @@ def get_all_profiles(db: Session):
 
 def create_profile(db: Session, profile_in: ProfileCreate) -> Profile:
     new_profile = Profile(
-        first_name=profile_in.first_name,
-        last_name=profile_in.last_name,
+        full_name=profile_in.full_name,
         gender=profile_in.gender,
-        hobby=profile_in.hobby,
         date_of_birth=profile_in.date_of_birth,
         bio=profile_in.bio,
-        created_at=datetime.utcnow()
+        created_at=datetime.utcnow(),
+        target_type=profile_in.target_type,
+        hobby=profile_in.hobby
     )
     db.add(new_profile)
     db.commit()

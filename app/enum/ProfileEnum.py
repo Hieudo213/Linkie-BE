@@ -1,10 +1,10 @@
 import enum
-
+from enum import Enum
 class GenderEnum(enum.Enum):
     MALE = "male"
     FEMALE = "female"
 
-class HobbyEnum(enum.Enum):
+class HobbyEnum(str, Enum):
     LISTENING_TO_MUSIC = "listening_to_music"
     SINGING = "singing"
     PLAYING_GUITAR = "playing_guitar"
