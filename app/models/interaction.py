@@ -6,7 +6,7 @@ from datetime import datetime
 class Interaction(Base):
     __tablename__ = 'interactions'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     userId = Column(Integer, ForeignKey("profiles.id"))  # Người swipe
     profileId = Column(Integer, ForeignKey("profiles.id"))  # Người bị swipe
     isLike = Column(Boolean, nullable=False)  # 1 là like, 0 là dislike
