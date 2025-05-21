@@ -2,6 +2,7 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from app.models.UserModel import User, RefreshToken, Otp
 from app.models.ImageModel import Image
 from app.models.ProfileModel import Profile
 from dotenv import load_dotenv
