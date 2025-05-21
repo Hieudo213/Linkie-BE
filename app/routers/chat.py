@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.schemas.chat import MessageCreate
 from app.crud import chat as crud_chat
-from app.core.connection_manager import manager  # bạn tự điều chỉnh đường dẫn
+from app.core.connection_manager import manager  
 import json
 
 router = APIRouter()
@@ -11,11 +11,11 @@ router = APIRouter()
 @router.websocket("/ws/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: int, db: AsyncSession = Depends(get_db)):
     await manager.connect(user_id, websocket)
-    print(f"✅ User {user_id} connected. Active users: {list(manager.active_connections.keys())}")
+    print(f"✅ User {user_id} Kết nối. Trạng thái users: {list(manager.active_connections.keys())}")
     try:
         while True:
             data = await websocket.receive_text()
-            print(f"📥 Received from user {user_id}: {data}")
+            print(f"📥 Nhận từ user {user_id}: {data}")
             try:
                 json_data = json.loads(data)
                 message = MessageCreate(**json_data)
@@ -27,10 +27,11 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int, db: AsyncSessio
                 await manager.send_personal_message(message.dict(), message.receiver_id)
 
             except Exception as e:
-                print(f"❌ Error handling message from user {user_id}: {e}")
+                print(f"❌ Lỗi xử lý tin nhắn từ người dùng {user_id}: {e}")
     except WebSocketDisconnect:
         manager.disconnect(user_id)
-        print(f"⚠️ User {user_id} disconnected. Active users: {list(manager.active_connections.keys())}")
+        print(f"⚠️ User {user_id} ngắt kết nối. Trạng thái users: {list(manager.active_connections.keys())}")
+
 
 # from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 # from sqlalchemy.ext.asyncio import AsyncSession

@@ -17,6 +17,6 @@ async def get_interactions(userId: int, isLike: bool, db: Session = Depends(get_
     interactions = get_user_interactions(db, userId, isLike)
     
     if not interactions:
-        raise HTTPException(status_code=404, detail="No interactions found")
+        raise HTTPException(status_code=404, detail="Không tìm thấy tương tác")
 
     return {"code": "200", "message": "Success", "profiles": interactions}

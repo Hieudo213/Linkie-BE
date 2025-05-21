@@ -36,5 +36,5 @@ def get_notifications(
 def delete_notification(noti_id: int, db: Session = Depends(get_db)):
     noti = crud_noti.delete_notification(db, noti_id)
     if not noti:
-        return {"code": "404", "message": "Notification not found"}
-    return {"code": "200", "message": "Deleted successfully"}
+        return {"code": "404", "message": "Không tìm thấy thông báo"}
+    return {"code": "200", "message": "Xóa thông báo thành công"}

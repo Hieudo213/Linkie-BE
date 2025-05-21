@@ -11,13 +11,13 @@ router = APIRouter()
 async def update_location(data: LocationUpdate, db: AsyncSession = Depends(get_db)):
     redis_client.geoadd("user_locations", (data.lng, data.lat, str(data.user_id)))
     await crud_location.upsert_user_location(db, data.user_id, data.lat, data.lng)
-    return {"message": "Location updated"}
+    return {"message": "Đã cập nhật vị trí"}
 
 @router.get("/users/nearby")
 async def get_nearby_users(user_id: int, radius_km: float = 10, db: AsyncSession = Depends(get_db)):
     pos = redis_client.geopos("user_locations", str(user_id))
     if not pos or pos[0] is None:
-        return {"message": "User location not found"}
+        return {"message": "Không tìm thấy vị trí người dùng"}
 
     lng, lat = pos[0]
 

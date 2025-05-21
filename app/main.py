@@ -1,7 +1,7 @@
 # app/main.py
 from fastapi import FastAPI
 from app.core.database import engine, Base
-from app.routers import profile, location, interaction, interaction_list, conversation, chat, notification
+from app.routers import profile, location, interaction, interaction_list, conversation, chat, notification, package
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,3 +22,5 @@ app.include_router(interaction_list.router)
 app.include_router(conversation.router)
 app.include_router(chat.router)
 app.include_router(notification.router)
+app.include_router(package.router)
+

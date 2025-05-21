@@ -14,3 +14,5 @@ class Conversation(Base):
 
     user_one = relationship("Profile", foreign_keys=[user1])
     user_two = relationship("Profile", foreign_keys=[user2])
+
+    messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")

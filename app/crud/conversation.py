@@ -13,3 +13,11 @@ def get_conversations(db: Session, user_id: int):
     ).all()
 
     return conversations
+
+def delete_conversation(db: Session, conversation_id: int) -> bool:
+    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+    if not conversation:
+        return False
+    db.delete(conversation)
+    db.commit()
+    return True

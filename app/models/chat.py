@@ -13,4 +13,6 @@ class Message(Base):
     content = Column(String)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
 
-    conversation = relationship("Conversation")
+    # conversation = relationship("Conversation")
+
+    conversation = relationship("Conversation", back_populates="messages")
