@@ -8,9 +8,9 @@ from app.core.database import get_db
 from app.crud.ProfileService import get_all_profiles, create_profile, update_profile, delete_profile, get_profile_by_id
 from app.schemas.ProfileDTO import ProfileCreate
 from app.schemas.ProfileDTO import ProfileOut
-from app.security.AuthDependency import get_current_user
+from app.security.AuthDependency import get_current_account
 
-router = APIRouter(prefix="/profiles", tags=["Profiles"], dependencies=[Depends(get_current_user)])
+router = APIRouter(prefix="/profiles", tags=["Profiles"], dependencies=[Depends(get_current_account)])
 
 
 @router.get("/", response_model=List[ProfileOut])

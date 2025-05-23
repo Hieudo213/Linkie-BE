@@ -2,11 +2,11 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
-from app.routers import ProfileController, ImageController
-from app.routers import AuthController
+from app.routers import ProfileController, ImageController, AuthController, AccountController
 
 app = FastAPI()
 app.include_router(AuthController.router)
+app.include_router(AccountController.router)
 app.include_router(ProfileController.router)
 app.include_router(ImageController.router)
 

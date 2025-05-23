@@ -12,7 +12,7 @@ async def upload_image(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    image = ImageService.upload_image(file, db)
+    image = ImageService.upload_account_avatar_image(file, db)
     return JSONResponse(content={
         "message": "Image uploaded successfully",
         "image": {
@@ -26,9 +26,9 @@ async def upload_image(
 
 @router.get("/{id}")
 def serve_image(id: int, db: Session = Depends(get_db)):
-    return ImageService.get_image_by_id(id, db)
+    return ImageService.upload_account_avatar_image(id, db)
 
 @router.delete("/delete/{id}")
 def delete_image(id: int, db: Session = Depends(get_db)):
-    ImageService.delete_image_by_id(id, db)
+    ImageService.delete_account_avatar_by_id(id, db)
     return {"message": f"Image with ID {id} deleted successfully (file + database)"}

@@ -6,7 +6,7 @@ from app.enum.ProfileEnum import GenderEnum, HobbyEnum
 from app.schemas.ImagesDTO import ImageOut
 class ProfileOut(BaseModel):
     id: int
-    full_name: str
+    username: str
     gender: GenderEnum
     date_of_birth: Optional[date] = None
     bio: Optional[str] = None
@@ -19,7 +19,7 @@ class ProfileOut(BaseModel):
         orm_mode = True
 
 class ProfileCreate(BaseModel):
-    full_name: str
+    username: str
     gender: GenderEnum
     date_of_birth: Optional[date] = None
     bio: Optional[str] = None

@@ -2,8 +2,8 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.models.UserModel import User, RefreshToken, Otp
-from app.models.ImageModel import Image
+from app.models.UserModel import Account, RefreshToken, Otp
+from app.models.ImageModel import AccountAvatar, ProfileImage
 from app.models.ProfileModel import Profile
 from dotenv import load_dotenv
 from app.core.base import Base

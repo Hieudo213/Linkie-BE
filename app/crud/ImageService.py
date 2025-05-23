@@ -4,11 +4,11 @@ from datetime import datetime
 from fastapi import UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.responses import FileResponse
-from app.models.ImageModel import Image
+from app.models.ImageModel import AccountAvatar
 
 class ImageService:
     @staticmethod
-    def upload_image(file: UploadFile, db: Session) -> Image:
+    def upload_account_avatar_image(file: UploadFile, db: Session) -> AccountAvatar:
         if not file:
             raise HTTPException(status_code=400, detail="File must not be empty")
 
@@ -24,7 +24,7 @@ class ImageService:
             shutil.copyfileobj(file.file, buffer)
 
         # Tạo entity Image
-        image_data = Image(
+        image_data = AccountAvatar(
             title=file.filename,
             url=save_path,
             alt=os.path.splitext(file.filename)[0],
@@ -39,9 +39,9 @@ class ImageService:
         return image_data
 
     @staticmethod
-    def get_image_by_id(id: int, db: Session) -> FileResponse:
+    def get_account_avatar_by_id(id: int, db: Session) -> FileResponse:
         # 1. Truy vấn ảnh từ DB
-        image = db.query(Image).filter(Image.id == id).first()
+        image = db.query(AccountAvatar).filter(AccountAvatar.id == id).first()
 
         if not image:
             raise HTTPException(status_code=404, detail=f"Image with ID {id} not found in the database")
@@ -55,9 +55,9 @@ class ImageService:
         # 3. Trả file như tài nguyên
         return FileResponse(path=image_path, media_type="image/jpeg", filename=image.title)
 
-    def delete_image_by_id(id: int, db: Session):
+    def delete_account_avatar_by_id(id: int, db: Session):
         # 1. Truy vấn ảnh trong DB
-        image = db.query(Image).filter(Image.id == id).first()
+        image = db.query(AccountAvatar).filter(AccountAvatar.id == id).first()
 
         if not image:
             raise HTTPException(status_code=404, detail=f"Image with ID {id} not found")

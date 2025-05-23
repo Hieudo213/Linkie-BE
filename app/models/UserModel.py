@@ -1,40 +1,41 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum, Boolean
 from sqlalchemy.orm import relationship
 from app.core.base import Base
 from app.enum.UserEnum import UserRole
 
-
-class User(Base):
-    __tablename__ = "users"
+class Account(Base):
+    __tablename__ = "account"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    phone = Column(String, nullable=False)
-    username = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
+    phone = Column(String, unique=True)
     role = Column(Enum(UserRole), default=UserRole.USER)
+    is_activated = Column(Boolean, default=False)
+    otp = relationship("Otp", back_populates="account", uselist=False)
+    refresh_token = relationship("RefreshToken", back_populates="account", uselist=False)
 
-    otp = relationship("Otp", back_populates="user", uselist=False)
-    refresh_token = relationship("RefreshToken", back_populates="user", uselist=False)
+    # One-to-one với AccountAvatar
+    avatar = relationship("AccountAvatar", back_populates="account", uselist=False, cascade="all, delete")
+    profile = relationship("Profile", back_populates="account", uselist=False, cascade="all, delete")
 
 
 class Otp(Base):
-    __tablename__ = "otps"
+    __tablename__ = "otp"
 
     id = Column(Integer, primary_key=True)
     otp = Column(Integer, nullable=False)
     expiration_time = Column(DateTime, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    account_id = Column(Integer, ForeignKey("account.id"), nullable=False)
 
-    user = relationship("User", back_populates="otp")
+    account = relationship("Account", back_populates="otp")
 
 
 class RefreshToken(Base):
-    __tablename__ = "refresh_tokens"
+    __tablename__ = "refresh_token"
 
     id = Column(Integer, primary_key=True)
     refresh_token = Column(String(512), nullable=False)
     expiration_time = Column(DateTime, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    account_id = Column(Integer, ForeignKey("account.id"), nullable=False)
 
-    user = relationship("User", back_populates="refresh_token")
+    account = relationship("Account", back_populates="refresh_token")

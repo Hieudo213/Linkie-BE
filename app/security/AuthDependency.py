@@ -4,12 +4,12 @@ from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 
 from app.core.database import get_db
-from app.models.UserModel import User
+from app.models.UserModel import Account
 from app.security.SecurityConfig import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")  # Dummy URL
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+def get_current_account(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> Account:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid or missing token",
@@ -23,19 +23,19 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     except JWTError:
         raise credentials_exception
 
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
+    account = db.query(Account).filter(Account.email == email).first()
+    if not account:
         raise credentials_exception
 
-    return user
+    return account
 
 
 def require_role(role: str):
-    def role_checker(user: User = Depends(get_current_user)):
-        if user.role != role:
+    def role_checker(account: Account = Depends(get_current_account)):
+        if account.role != role:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"You must have {role} role to access this resource."
             )
-        return user
+        return account
     return role_checker

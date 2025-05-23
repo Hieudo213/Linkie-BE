@@ -13,7 +13,7 @@ def get_all_profiles(db: Session):
 
 def create_profile(db: Session, profile_in: ProfileCreate) -> Profile:
     new_profile = Profile(
-        full_name=profile_in.full_name,
+        username=profile_in.username,
         gender=profile_in.gender,
         date_of_birth=profile_in.date_of_birth,
         bio=profile_in.bio,

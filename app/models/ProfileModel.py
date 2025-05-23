@@ -1,22 +1,23 @@
-from sqlalchemy import Column, Integer, String, Date, Text, DateTime, Enum, ARRAY
+from pygments.lexers import q
+from sqlalchemy import Column, Integer, String, Date, Text, DateTime, Enum, ARRAY, ForeignKey
 from sqlalchemy.sql import func
 from app.enum.ProfileEnum import GenderEnum, HobbyEnum
 from app.core.base import Base
 from sqlalchemy.orm import relationship
-
 class Profile(Base):
-    __tablename__ = "profiles"
+    __tablename__ = "profile"
 
     id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, nullable=False)
-    gender = Column((Enum(GenderEnum)), nullable=False)
+    username = Column(String)
+    gender = Column((Enum(GenderEnum)))
     date_of_birth = Column(Date)
     bio = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     target_type = Column(String(1000))
     hobby = Column(
         ARRAY(Enum(HobbyEnum, name="hobbyenum", validate_strings=True)),
-        nullable=True
     )
-    # 👉 Quan hệ 1-N: Một profile có nhiều ảnh
-    images = relationship("Image", back_populates="profile", cascade="all, delete-orphan")
+    # One-to-many: profile → images
+    images = relationship("ProfileImage", back_populates="profile", cascade="all, delete-orphan")
+    account_id = Column(Integer, ForeignKey("account.id"))
+    account = relationship("Account", back_populates="profile")
