@@ -21,3 +21,4 @@ class Profile(Base):
     images = relationship("ProfileImage", back_populates="profile", cascade="all, delete-orphan")
     account_id = Column(Integer, ForeignKey("account.id"))
     account = relationship("Account", back_populates="profile")
+    # user_location = relationship("UserLocation", backref="account", uselist=False, cascade="all, delete-orphan")

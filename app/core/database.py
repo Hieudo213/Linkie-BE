@@ -5,10 +5,13 @@ from sqlalchemy.orm import sessionmaker
 from app.models.UserModel import Account, RefreshToken, Otp
 from app.models.ImageModel import AccountAvatar, ProfileImage
 from app.models.ProfileModel import Profile
+from app.models.location import UserLocation
 from dotenv import load_dotenv
 from app.core.base import Base
+
 load_dotenv() 
 database_url = os.environ.get("DATABASE_URL")
+
 engine = create_engine(database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
