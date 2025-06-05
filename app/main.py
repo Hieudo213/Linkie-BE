@@ -13,7 +13,6 @@ app.include_router(ProfileController.router)
 app.include_router(ImageController.router)
 app.include_router(location.router)
 
-
 @app.get("/")
 def root():
     return {"message": "Dating app API is live"}
