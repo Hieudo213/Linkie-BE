@@ -17,7 +17,7 @@ class Account(Base):
     # One-to-one với AccountAvatar
     avatar = relationship("AccountAvatar", back_populates="account", uselist=False, cascade="all, delete")
     profile = relationship("Profile", back_populates="account", uselist=False, cascade="all, delete")
-
+    location = relationship("Location", back_populates="account", uselist=False)
 
 class Otp(Base):
     __tablename__ = "otp"

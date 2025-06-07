@@ -2,14 +2,14 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
-from app.routers import ProfileController, ImageController, AuthController, AccountController
+from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController
 
 app = FastAPI()
 app.include_router(AuthController.router)
 app.include_router(AccountController.router)
 app.include_router(ProfileController.router)
 app.include_router(ImageController.router)
-
+app.include_router(LocationController.router)
 @app.get("/")
 def root():
     return {"message": "Dating app API is live"}
