@@ -1,7 +1,11 @@
+import math
+from typing import List, Optional, Tuple
+
 from fastapi import HTTPException
 from sqlalchemy import String
 from sqlalchemy.orm import Session
 
+from app.enum.UserEnum import UserRole
 from app.models.ProfileModel import Profile
 from app.models.ImageModel import AccountAvatar
 from app.models.UserModel import Account, Otp, RefreshToken
@@ -56,3 +60,23 @@ def delete_account_with_otp_constraint(email: str, db: Session) -> String:
     db.commit()
 
     return f"Account with email '{email}' and related records deleted successfully."
+
+def get_paginated_activated_accounts(
+    db: Session,
+    page: int = 1,
+    size: int = 10,
+    role: Optional[UserRole] = None
+) -> Tuple[int, int, List[Account]]:
+    query = db.query(Account).filter(Account.is_activated == True)
+
+    if role:
+        query = query.filter(Account.role == role)
+
+    total = query.count()
+    total_pages = math.ceil(total / size)
+    items = query.offset((page - 1) * size).limit(size).all()
+
+    return total, total_pages, items
+
+def get_account_by_email(db: Session, email: str) -> Optional[Account]:
+    return db.query(Account).filter(Account.email == email).first()

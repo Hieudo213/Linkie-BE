@@ -13,7 +13,7 @@ from app.models.UserModel import Account
 
 class ImageService:
     @staticmethod
-    def upload_account_avatar_image(file: UploadFile, db: Session, account_id: int) -> AccountAvatar:
+    def upload_account_avatar_image(file: UploadFile, db: Session, email: str) -> AccountAvatar:
         if not file:
             raise HTTPException(status_code=400, detail="File must not be empty")
 
@@ -29,10 +29,11 @@ class ImageService:
             shutil.copyfileobj(file.file, buffer)
 
         # Kiểm tra account_id, đảm bảo account tồn tại
-        account = db.query(Account).filter(Account.id == account_id).first()
+        account = db.query(Account).filter(Account.email == email).first()
         if not account:
             raise HTTPException(status_code=404, detail="Account not found")
 
+        account_id = account.id;
         # Tạo entity AccountAvatar và gắn account_id vào
         image_data = AccountAvatar(
             title=file.filename,
