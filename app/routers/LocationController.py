@@ -4,7 +4,7 @@ from app.core.database import get_db
 from app.crud.LocationService import LocationService
 
 router = APIRouter(
-    prefix="/auth",
+    prefix="/location",
     tags=["Location"]
 )
 

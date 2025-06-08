@@ -6,6 +6,8 @@ from app.models.UserModel import Account, RefreshToken, Otp
 from app.models.ImageModel import AccountAvatar, ProfileImage
 from app.models.ProfileModel import Profile
 from app.models.LocationModel import Location
+from app.models.MessageModel import Message
+from app.models.NotificationModel import Notification
 from dotenv import load_dotenv
 from app.core.base import Base
 load_dotenv() 

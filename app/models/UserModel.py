@@ -15,6 +15,9 @@ class Account(Base):
     refresh_token = relationship("RefreshToken", back_populates="account", uselist=False)
 
     # One-to-one với AccountAvatar
+    notifications = relationship("Notification", back_populates="recipient")
+    sent_messages = relationship("Message", back_populates="from_user", foreign_keys="Message.from_user_id")
+    received_messages = relationship("Message", back_populates="to_user", foreign_keys="Message.to_user_id")
     avatar = relationship("AccountAvatar", back_populates="account", uselist=False, cascade="all, delete")
     profile = relationship("Profile", back_populates="account", uselist=False, cascade="all, delete")
     location = relationship("Location", back_populates="account", uselist=False)
