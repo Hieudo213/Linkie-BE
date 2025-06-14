@@ -11,13 +11,20 @@ class Account(Base):
     phone = Column(String, unique=True)
     role = Column(Enum(UserRole), default=UserRole.USER)
     is_activated = Column(Boolean, default=False)
+
+    #relationship
     otp = relationship("Otp", back_populates="account", uselist=False)
     refresh_token = relationship("RefreshToken", back_populates="account", uselist=False)
-
-    # One-to-one với AccountAvatar
+    notifications = relationship("Notification", back_populates="recipient")
+    sent_messages = relationship("Message", back_populates="from_user", foreign_keys="Message.from_user_id")
+    received_messages = relationship("Message", back_populates="to_user", foreign_keys="Message.to_user_id")
     avatar = relationship("AccountAvatar", back_populates="account", uselist=False, cascade="all, delete")
     profile = relationship("Profile", back_populates="account", uselist=False, cascade="all, delete")
-    location = relationship("UserLocation", uselist=False, backref="account")
+    location = relationship("Location", back_populates="account", uselist=False)
+    likes_sent = relationship("Like", back_populates="liker", foreign_keys="[Like.liker_id]", cascade="all, delete-orphan")
+    likes_received = relationship("Like", back_populates="liked", foreign_keys="[Like.liked_id]", cascade="all, delete-orphan")
+    matches_initiated = relationship("Match", back_populates="user1", foreign_keys="[Match.user1_id]", cascade="all, delete-orphan")
+    matches_received = relationship("Match", back_populates="user2", foreign_keys="[Match.user2_id]", cascade="all, delete-orphan")
 
 class Otp(Base):
     __tablename__ = "otp"

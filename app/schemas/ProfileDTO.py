@@ -18,7 +18,7 @@ class ProfileOut(BaseModel):
     hobby: Optional[List[HobbyEnum]] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class ProfileCreate(BaseModel):
     # username: str

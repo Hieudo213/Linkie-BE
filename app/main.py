@@ -5,14 +5,17 @@ from app.core.database import engine, Base
 from app.routers import ProfileController, ImageController, AuthController, AccountController, location
 
 Base.metadata.create_all(bind=engine)
+from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController
 
 app = FastAPI()
 app.include_router(AuthController.router)
 app.include_router(AccountController.router)
 app.include_router(ProfileController.router)
 app.include_router(ImageController.router)
-app.include_router(location.router)
-
+app.include_router(LocationController.router)
+app.include_router(MessageController.router)
+app.include_router(NotificationController.router)
+app.include_router(InteractionController.router)
 @app.get("/")
 def root():
     return {"message": "Dating app API is live"}

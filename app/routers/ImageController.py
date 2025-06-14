@@ -8,9 +8,9 @@ from app.crud.ImageService import ImageService
 
 router = APIRouter(prefix="/images", tags=["Images"])
 
-@router.post("/account/{account_id}")
-def upload_avatar_account_endpoint(account_id: int, file: UploadFile, db: Session = Depends(get_db)):
-    image = ImageService.upload_account_avatar_image(file, db, account_id)
+@router.post("/account/{email}")
+def upload_avatar_account_endpoint(email: str, file: UploadFile, db: Session = Depends(get_db)):
+    image = ImageService.upload_account_avatar_image(file, db, email)
     return {"image": image}
 
 @router.get("/account/{image_id}")
