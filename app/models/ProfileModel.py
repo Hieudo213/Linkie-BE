@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 class Profile(Base):
     __tablename__ = "profile"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String)
     gender = Column((Enum(GenderEnum)))
     date_of_birth = Column(Date)

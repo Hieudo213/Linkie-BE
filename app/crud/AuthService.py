@@ -67,19 +67,10 @@ def verify_email_by_otp(request: VerifyOtpRequest, db: Session) -> AuthResponse:
     db.commit()
 
     # Create a new null profile
-    new_profile = Profile(
-        username= None,
-        gender= None,
-        date_of_birth= None,
-        bio= None,
-        created_at= None,
-        target_type= None,
-        hobby= None,
-        account_id = account.id,
-    )
-    db.add(new_profile)
-    db.commit()
-    db.refresh(new_profile)
+    # Tạo profile nếu chưa có
+    existing_profile = db.query(Profile).filter_by(account_id=account.id).first()
+    # profile = existing_profile
+   
 
     # Sửa trường is_activated = true
     account.is_activated = True
@@ -104,58 +95,16 @@ def verify_email_by_otp(request: VerifyOtpRequest, db: Session) -> AuthResponse:
         db.add(refresh)
 
     db.commit()
+    # profile có thể là new_profile hoặc existing_profile
+    # profile = new_profile if not existing_profile else existing_profile
 
     return AuthResponse(
         access_token=access_token,
         refresh_token=refresh_token_str,
         account_id=account.id,
-        profile_id=profile.id,
+        # profile_id=profile.id,
     )
 
-
-# def verify_otp_and_login(request: VerifyOtpRequest, db: Session) -> AuthResponse:
-#     account = db.query(Account).filter(Account.email == request.email).first()
-#     if not account:
-#         raise HTTPException(status_code=404, detail="Account not found")
-
-#     otp_entry = db.query(Otp).filter(Otp.account_id == account.id, Otp.otp == request.otp).first()
-#     if not otp_entry:
-#         raise HTTPException(status_code=400, detail="Invalid OTP")
-
-#     if otp_entry.expiration_time < datetime.utcnow():
-#         db.delete(otp_entry)
-#         db.commit()
-#         raise HTTPException(status_code=400, detail="OTP expired")
-
-#     # OTP is valid → delete it
-#     db.delete(otp_entry)
-#     db.commit()
-
-#     # Access & Refresh Token
-#     access_token = jwt_service.create_access_token(subject=account.email)
-#     refresh_token_str = jwt_service.create_refresh_token(subject=account.email)
-
-#     # Lưu refresh token vào DB (nếu chưa có thì tạo mới, nếu có thì cập nhật)
-#     refresh = db.query(RefreshToken).filter(RefreshToken.account_id == account.id).first()
-#     expires_at = datetime.utcnow() + timedelta(hours=jwt_service.refresh_token_expire_hours)
-
-#     if refresh:
-#         refresh.refresh_token = refresh_token_str
-#         refresh.expiration_time = expires_at
-#     else:
-#         refresh = RefreshToken(
-#             account_id=account.id,
-#             refresh_token=refresh_token_str,
-#             expiration_time=expires_at
-#         )
-#         db.add(refresh)
-
-#     db.commit()
-
-#     return AuthResponse(
-#         access_token=access_token,
-#         refresh_token=refresh_token_str
-#     )
 
 def verify_otp_and_login(request: VerifyOtpRequest, db: Session) -> AuthResponse:
     account = db.query(Account).filter(Account.email == request.email).first()
