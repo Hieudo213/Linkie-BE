@@ -1,14 +1,21 @@
 # app/core/database.py
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.models.profile import Base, Profile  # Import Base và Profile từ profile.py
+from app.models.UserModel import Account, RefreshToken, Otp
+from app.models.ImageModel import AccountAvatar, ProfileImage
+from app.models.ProfileModel import Profile
+from app.models.LocationModel import Location
+from app.models.MessageModel import Message
+from app.models.NotificationModel import Notification
+from app.models.InteractionModel import Match, Like
+from dotenv import load_dotenv
+from app.core.base import Base
 
-# DATABASE_URL = "postgresql://tinder_user:quangteo@localhost:5432/tinder_db"
+load_dotenv() 
+database_url = os.environ.get("DATABASE_URL")
 
-# DATABASE_URL = "postgresql://postgres:linkiesteam05@db.lfyxsnujmwljbncwiout.supabase.co:5432/postgres"
-
-DATABASE_URL = "postgresql://postgres.lfyxsnujmwljbncwiout:linkiesteam05@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
-engine = create_engine(DATABASE_URL)
+engine = create_engine(database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Tạo bảng

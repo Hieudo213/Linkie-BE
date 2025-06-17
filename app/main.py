@@ -1,26 +1,49 @@
 # app/main.py
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 from app.core.database import engine, Base
-from app.routers import profile, location, interaction, interaction_list, conversation, chat, notification, package
+# from app.routers import ProfileController, ImageController, AuthController, AccountController, location
+from fastapi.staticfiles import StaticFiles
+from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController, package
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(
-    title="Dating App API",
-    description="API cho dự án Dating App",
-    version="1.0.0"
-)
+app = FastAPI()
+app.include_router(AuthController.router)
+app.include_router(AccountController.router)
+app.include_router(ProfileController.router)
+app.include_router(ImageController.router)
+app.include_router(LocationController.router)
+app.include_router(MessageController.router)
+app.include_router(NotificationController.router)
+app.include_router(InteractionController.router)
+app.include_router(package.router)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def root():
     return {"message": "Dating app API is live"}
 
-app.include_router(profile.router)
-app.include_router(location.router)
-app.include_router(interaction.router)
-app.include_router(interaction_list.router)
-app.include_router(conversation.router)
-app.include_router(chat.router)
-app.include_router(notification.router)
-app.include_router(package.router)
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="Linkie API",
+        version="1.0.0",
+        description="Linkie API with JWT Authentication",
+        routes=app.routes,
+    )
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+    for path in openapi_schema["paths"].values():
+        for operation in path.values():
+            operation.setdefault("security", []).append({"BearerAuth": []})
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
 
+app.openapi = custom_openapi
