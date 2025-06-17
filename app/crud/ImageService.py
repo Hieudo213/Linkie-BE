@@ -90,26 +90,26 @@ class ImageService:
         db.delete(image)
         db.commit()
 
-    @staticmethod
-    def get_profile_images_by_id(id: int, db: Session) -> FileResponse:
-        # 1. Truy vấn ảnh từ DB
-        image = db.query(ProfileImage).filter(ProfileImage.id == id).first()
+    # @staticmethod
+    # def get_profile_images_by_id(id: int, db: Session) -> FileResponse:
+    #     # 1. Truy vấn ảnh từ DB
+    #     image = db.query(ProfileImage).filter(ProfileImage.id == id).first()
 
-        if not image:
-            raise HTTPException(status_code=404, detail=f"Image with ID {id} not found in the database")
+    #     if not image:
+    #         raise HTTPException(status_code=404, detail=f"Image with ID {id} not found in the database")
 
-        # 2. Kiểm tra đường dẫn file có tồn tại không
-        image_path = image.url  # Đường dẫn lưu trong DB
-        if not os.path.exists(image_path):
-            raise HTTPException(status_code=404, detail="Image file not found on server")
+    #     # 2. Kiểm tra đường dẫn file có tồn tại không
+    #     image_path = image.url  # Đường dẫn lưu trong DB
+    #     if not os.path.exists(image_path):
+    #         raise HTTPException(status_code=404, detail="Image file not found on server")
 
-        # 3. Xác định loại MIME (media_type) của ảnh dựa trên phần mở rộng của file
-        mime_type, _ = mimetypes.guess_type(image_path)
-        if not mime_type:
-            mime_type = "application/octet-stream"  # Mặc định nếu không xác định được loại MIME
+    #     # 3. Xác định loại MIME (media_type) của ảnh dựa trên phần mở rộng của file
+    #     mime_type, _ = mimetypes.guess_type(image_path)
+    #     if not mime_type:
+    #         mime_type = "application/octet-stream"  # Mặc định nếu không xác định được loại MIME
 
-        # 4. Trả file như tài nguyên
-        return FileResponse(path=image_path, media_type=mime_type, filename=image.title)
+    #     # 4. Trả file như tài nguyên
+    #     return FileResponse(path=image_path, media_type=mime_type, filename=image.title)
 
     @staticmethod
     def upload_profile_images(files: List[UploadFile], db: Session, profile_id: int) -> List[ProfileImage]:
@@ -131,11 +131,11 @@ class ImageService:
             # Lưu file vào ổ đĩa
             with open(save_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
-
+            image_url = f"static/images/profile/{file.filename}"
             # Tạo entity ProfileImage
             image_data = ProfileImage(
                 title=file.filename,
-                url=save_path,
+                url=image_url,
                 alt=os.path.splitext(file.filename)[0],
                 upload_date=datetime.utcnow(),
                 profile_id=profile_id  # Liên kết với profile_id
@@ -157,3 +157,56 @@ class ImageService:
             raise HTTPException(status_code=404, detail=f"Profile with ID {profile_id} not found in the database")
 
         return uploaded_images
+    
+    def save_profile_image(db: Session, profile_id: int, filename: str):
+        file_url = f"static/images/profile/{filename}"
+        
+        image = ProfileImage(
+            profile_id=profile_id, 
+            url=file_url,
+            title=filename,
+            alt=None,
+            upload_date=datetime.utcnow())
+        db.add(image)
+        db.commit()
+        db.refresh(image)
+        return image
+    
+    @staticmethod
+    def get_profile_images_by_id(id: int, db: Session) -> FileResponse:
+        image = db.query(ProfileImage).filter(ProfileImage.id == id).first()
+        if not image:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        image_path = os.path.join(os.getcwd(), image.url)
+        if not os.path.isfile(image_path):
+           image_path += ".jpg"
+           image_path += ".jpeg"
+           image_path += ".png"
+
+        if not os.path.isfile(image_path):
+            raise HTTPException(status_code=404, detail="File not found on server")
+
+        mime_type, _ = mimetypes.guess_type(image_path)
+        return FileResponse(path=image_path, media_type=mime_type or "application/octet-stream")
+
+    @staticmethod
+    def delete_profile_image(image_id: int, db: Session):
+        image = db.query(ProfileImage).filter(ProfileImage.id == image_id).first()
+        if not image:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        # Xóa file ảnh khỏi ổ đĩa nếu tồn tại
+        file_path = os.path.join(os.getcwd(), image.url)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
+        # Xóa bản ghi khỏi DB
+        db.delete(image)
+        db.commit()
+        return {"detail": "Deleted successfully"}
+    
+    
+    
+    
+    

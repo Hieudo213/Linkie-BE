@@ -80,3 +80,7 @@ def get_paginated_activated_accounts(
 
 def get_account_by_email(db: Session, email: str) -> Optional[Account]:
     return db.query(Account).filter(Account.email == email).first()
+
+
+def get_account_by_id(db: Session, account_id: int):
+    return db.query(Account).filter_by(id=account_id).first()

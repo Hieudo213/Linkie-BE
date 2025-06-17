@@ -2,10 +2,11 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from app.core.database import engine, Base
-from app.routers import ProfileController, ImageController, AuthController, AccountController, location
+# from app.routers import ProfileController, ImageController, AuthController, AccountController, location
+from fastapi.staticfiles import StaticFiles
+from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController, package
 
 Base.metadata.create_all(bind=engine)
-from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController
 
 app = FastAPI()
 app.include_router(AuthController.router)
@@ -16,6 +17,9 @@ app.include_router(LocationController.router)
 app.include_router(MessageController.router)
 app.include_router(NotificationController.router)
 app.include_router(InteractionController.router)
+app.include_router(package.router)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 @app.get("/")
 def root():
     return {"message": "Dating app API is live"}

@@ -19,11 +19,11 @@ class ProfileImage(Base):
     __tablename__ = "profile_image"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
+    title = Column(String, nullable=True)
     url = Column(String, nullable=False)
     alt = Column(String)
     upload_date = Column(DateTime, default=datetime.utcnow)
-
+    
     # ForeignKey liên kết về profile
     profile_id = Column(Integer, ForeignKey("profile.id"), nullable=False)
 
