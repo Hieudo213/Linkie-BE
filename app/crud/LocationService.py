@@ -1,9 +1,10 @@
 from geoalchemy2.functions import ST_SetSRID, ST_MakePoint, ST_Distance
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.UserModel import Account
 from app.models.LocationModel import Location
 from datetime import datetime
 from geopy.geocoders import Nominatim
+from app.schemas.UserSchema import AccountWithAvatarOut
 
 class LocationService:
 
@@ -44,16 +45,62 @@ class LocationService:
         return location
 
     @staticmethod
-    def find_nearby_users(current_lat: float, current_lon: float, db: Session, radius: int = 10):
-        # Tạo điểm của người dùng hiện tại
-        current_location = ST_SetSRID(ST_MakePoint(current_lon, current_lat), 4326)
+    # def find_nearby_users_by_account_id(account_id: int, db: Session, radius: int = 10):
+    #     # Lấy vị trí của tài khoản hiện tại
+    #     current_location = db.query(Location).filter(Location.account_id == account_id).first()
+    #     if not current_location:
+    #         return []
 
-        # Truy vấn những người dùng có vị trí trong bán kính radius km
-        nearby_users = db.query(Account).join(Location).filter(
-            ST_Distance(Location.point, current_location) <= radius * 1000  # Chuyển km thành m
-        ).all()
+    #     current_point = ST_SetSRID(ST_MakePoint(current_location.longitude, current_location.latitude), 4326)
 
-        return nearby_users
+    #     # Truy vấn người dùng gần đó (ngoại trừ chính họ)
+    #     results = db.query(
+    #         Account.id,
+    #         Account.email,
+    #         Account.avatar,
+    #         Account.role,
+    #         Account.is_activated,
+    #         Location.latitude,
+    #         Location.longitude
+    #     ).join(Location).filter(
+    #         Account.id != account_id,
+    #         ST_Distance(Location.point, current_point) <= radius * 1000  # km → m
+    #     ).distinct(Account.id).all()
+
+    #     return [dict(r._mapping) for r in results]
+    def find_nearby_users_by_account_id(account_id: int, db: Session, radius: int = 10):
+        current_location = db.query(Location).filter(Location.account_id == account_id).first()
+        if not current_location:
+            return []
+
+        current_point = ST_SetSRID(ST_MakePoint(current_location.longitude, current_location.latitude), 4326)
+
+    # Lấy danh sách tài khoản gần đó, JOIN cả avatar và location
+        accounts = (
+            db.query(Account)
+            .join(Location)
+            .options(joinedload(Account.avatar))
+            .filter(
+                Account.id != account_id,
+                ST_Distance(Location.point, current_point) <= radius * 1000
+            )
+            .all()
+        )
+
+    # Trả về dữ liệu đầy đủ để serialize bằng `AccountWithAvatarOut`
+        results = []
+        for acc in accounts:
+            results.append(AccountWithAvatarOut(
+                id=acc.id,
+                email=acc.email,
+                is_activated=acc.is_activated,
+                role=acc.role,
+                avatar=acc.avatar,  # sẽ được serialize đúng
+                latitude=acc.location.latitude,
+                longitude=acc.location.longitude,
+            ))
+
+        return results
 
     @staticmethod
     def get_location_name(latitude, longitude):

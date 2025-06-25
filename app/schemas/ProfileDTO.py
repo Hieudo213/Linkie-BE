@@ -4,6 +4,7 @@ from datetime import date, datetime
 from typing import Optional, List
 from app.enum.ProfileEnum import GenderEnum, HobbyEnum
 from app.schemas.ImagesDTO import ImageOut
+
 class ProfileOut(BaseModel):
     id: int
     # username: str
@@ -16,7 +17,8 @@ class ProfileOut(BaseModel):
     images: List[ImageOut]
     target_type: Optional[str] = None
     hobby: Optional[List[HobbyEnum]] = None
-
+    avatar: Optional[ImageOut] = None
+    
     class Config:
         from_attributes = True
 

@@ -21,19 +21,18 @@ def update_location(account_id: int, latitude: float, longitude: float, db: Sess
     return location
 
 
-@router.get("/nearby_users", response_model=List[AccountWithAvatarOut])
-def get_nearby_users(
-        current_lat: float,
-        current_lon: float,
-        db: Session = Depends(get_db),
-        radius: int = 10
+@router.get("/nearby_users_by_account", response_model=List[AccountWithAvatarOut])
+def get_nearby_users_by_account(
+    account_id: int,
+    db: Session = Depends(get_db),
+    radius: int = 10
 ):
-    nearby_users = LocationService.find_nearby_users(current_lat, current_lon, db, radius)
-
+    nearby_users = LocationService.find_nearby_users_by_account_id(account_id, db, radius)
     if not nearby_users:
-        raise HTTPException(status_code=404, detail="No users found in your area.")
-
+        raise HTTPException(status_code=404, detail="No nearby users found.")
     return nearby_users
+
+
 
 
 @router.get("/get_location_name")

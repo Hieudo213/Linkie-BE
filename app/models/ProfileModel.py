@@ -17,6 +17,8 @@ class Profile(Base):
     hobby = Column(
         ARRAY(Enum(HobbyEnum, name="hobbyenum", validate_strings=True)),
     )
+    avatar_id = Column(Integer, ForeignKey("account_avatar.id", ondelete="SET NULL"), nullable=True)
+    avatar = relationship("AccountAvatar", foreign_keys=[avatar_id])
     # One-to-many: profile → images
     images = relationship("ProfileImage", back_populates="profile", cascade="all, delete-orphan")
     account_id = Column(Integer, ForeignKey("account.id"))
