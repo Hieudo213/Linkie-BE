@@ -14,7 +14,6 @@ class AccountAvatar(Base):
     account_id = Column(Integer, ForeignKey("account.id"), unique=True, nullable=False)
     account = relationship("Account", back_populates="avatar")
 
-
 class ProfileImage(Base):
     __tablename__ = "profile_image"
 

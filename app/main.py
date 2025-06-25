@@ -4,7 +4,7 @@ from fastapi.openapi.utils import get_openapi
 from app.core.database import engine, Base
 # from app.routers import ProfileController, ImageController, AuthController, AccountController, location
 from fastapi.staticfiles import StaticFiles
-from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController, package
+from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController, package, location
 
 Base.metadata.create_all(bind=engine)
 

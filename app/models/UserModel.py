@@ -36,7 +36,6 @@ class Otp(Base):
 
     account = relationship("Account", back_populates="otp")
 
-
 class RefreshToken(Base):
     __tablename__ = "refresh_token"
 
