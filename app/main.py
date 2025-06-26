@@ -1,12 +1,8 @@
 # app/main.py
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-from app.core.database import engine, Base
-# from app.routers import ProfileController, ImageController, AuthController, AccountController, location
-from fastapi.staticfiles import StaticFiles
-from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController, package, location
-
-Base.metadata.create_all(bind=engine)
+from fastapi.middleware.cors import CORSMiddleware
+from app.routers import ProfileController, ImageController, AuthController, AccountController, LocationController, MessageController, NotificationController, InteractionController, ChattingController
 
 app = FastAPI()
 app.include_router(AuthController.router)
@@ -17,9 +13,7 @@ app.include_router(LocationController.router)
 app.include_router(MessageController.router)
 app.include_router(NotificationController.router)
 app.include_router(InteractionController.router)
-app.include_router(package.router)
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
+app.include_router(ChattingController.router)
 @app.get("/")
 def root():
     return {"message": "Dating app API is live"}
@@ -47,3 +41,11 @@ def custom_openapi():
     return app.openapi_schema
 
 app.openapi = custom_openapi
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React chạy ở port 3000
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

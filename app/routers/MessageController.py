@@ -14,7 +14,7 @@ router = APIRouter(
 
 @router.websocket("/ws/chat/{user_id}")
 async def websocket_chat_endpoint(websocket: WebSocket, user_id: int, db: Session = Depends(get_db)):
-    await ws_manager.connect(websocket, user_id, conn_type="chat")  # ✅ RẤT QUAN TRỌNG
+    await ws_manager.connect(websocket, user_id, conn_type="chat")
 
     try:
         while True:
@@ -27,18 +27,24 @@ async def websocket_chat_endpoint(websocket: WebSocket, user_id: int, db: Sessio
                 if not to_user_id or not content:
                     raise ValueError
             except Exception:
-                raise HTTPException(status_code=400, detail="Invalid message format")
+                await websocket.send_text(json.dumps({"error": "Invalid message format"}))
+                continue
 
-            # Lưu vào DB
+            # Lưu tin nhắn
             new_message = Message(from_user_id=user_id, to_user_id=to_user_id, content=content)
             db.add(new_message)
             db.commit()
 
-            # Gửi tin nhắn tới chat socket của người nhận
-            await ws_manager.send_to(to_user_id, "chat", f"New message from {user_id}: {content}")
+            # Chuẩn bị nội dung JSON để gửi đi
+            message_data = json.dumps({
+                "from_user_id": user_id,
+                "to_user_id": to_user_id,
+                "content": content
+            })
 
-            # Gửi thông báo tới notification socket của người nhận
-            await ws_manager.send_to(to_user_id, "notification", f"You have a new message from user {user_id}")
+            # Gửi đến người nhận qua cả 2 kênh
+            await ws_manager.send_to(to_user_id, "chat", message_data)
+            await ws_manager.send_to(to_user_id, "notification", message_data)
 
     except WebSocketDisconnect:
         ws_manager.disconnect(user_id, "chat")
