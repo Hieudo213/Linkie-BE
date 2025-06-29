@@ -15,10 +15,6 @@ class WebSocketManager:
         # Gán conn_type mà không ghi đè dict cũ
         self.active_connections[user_id][conn_type] = websocket
 
-        print(f"[Connected] User {user_id} ({conn_type}) connected.")
-        print("--- ACTIVE CONNECTIONS ---")
-        for uid, types in self.active_connections.items():
-            print(f"user_id={uid} => {list(types.keys())}")
 
     def disconnect(self, user_id: int, conn_type: str):
         if user_id in self.active_connections:
